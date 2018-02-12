@@ -4,15 +4,15 @@ use std::ops::Index;
 type T = usize;
 
 #[derive(Debug, PartialEq, Eq)]
-pub struct vEBTree {
-    children: Vec<vEBTree>,
-    aux: Vec<vEBTree>,
+pub struct VEBTree {
+    children: Vec<VEBTree>,
+    aux: Vec<VEBTree>,
     max: Option<T>,
     min: Option<T>
 
 }
 
-impl vEBTree {
+impl VEBTree {
     pub fn new(max_size: usize) -> Self {
         // Takes the square root of the max_size, then casts
         // it back to an usize integer 
@@ -40,7 +40,7 @@ impl vEBTree {
             let mut aux = Self::new(pass_size);
             aux_seed.push(aux);
         }
-        let mut tree = vEBTree {
+        let mut tree = VEBTree {
             children: children_seed,
             aux: aux_seed,
             max: None,
@@ -51,7 +51,7 @@ impl vEBTree {
 }
 
 /*
-impl<'a, Q: ?Sized, T: Integer> Index<&'a Q> for vEBTree<T> {
+impl<'a, Q: ?Sized, T: Integer> Index<&'a Q> for VEBTree<T> {
     type Output = T;
     /*
      * index(&self, index: &Q)
@@ -88,7 +88,7 @@ impl<'a, Q: ?Sized, T: Integer> Index<&'a Q> for vEBTree<T> {
     }
 }
 */
-impl vEBTree {
+impl VEBTree {
     pub fn search(&self, value: T) -> Option<T> {
         match self.min {
             Some(min_val) => {
@@ -303,8 +303,8 @@ mod tests{
 
     #[test]
     fn test_insert_and_delete_correctness(){
-        let mut test_tree = vEBTree::new(16);
-        let mut reference_tree = vEBTree::new(16);
+        let mut test_tree = VEBTree::new(16);
+        let mut reference_tree = VEBTree::new(16);
         for i in 0..16 {
             test_tree.insert(i);
         }
@@ -316,7 +316,7 @@ mod tests{
 
     #[test]
     fn test_minimum_correctness(){
-        let mut test_tree = vEBTree::new(16);
+        let mut test_tree = VEBTree::new(16);
         for i in (0..16).rev() {
             test_tree.insert(i);
             assert_eq!(test_tree.minimum(), Some(i));
@@ -340,7 +340,7 @@ mod tests{
 
     #[test]
     fn test_maximum_correctness(){
-        let mut test_tree = vEBTree::new(16);
+        let mut test_tree = VEBTree::new(16);
         for i in (0..16) {
             test_tree.insert(i);
             assert_eq!(test_tree.maximum(), Some(i));

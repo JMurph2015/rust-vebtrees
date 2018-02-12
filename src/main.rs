@@ -1,7 +1,7 @@
 extern crate num;
 
 mod lib;
-use lib::vEBtree::*;
+use lib::VEBtree::*;
 
 fn main() {
     println!("Hello, world!");

@@ -1,2 +1,2 @@
-pub mod vEBtree;
+pub mod VEBtree;
 pub mod util;
