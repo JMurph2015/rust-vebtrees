@@ -295,7 +295,7 @@ impl VEBTree {
 
 #[cfg(test)]
 mod tests{
-    use lib::vEBtree::*;
+    use lib::VEBTree::*;
     #[test]
     fn test_index_correctness(){
         
