@@ -22,13 +22,8 @@ impl VEBTree {
             self_size = 0;
             pass_size = 0;
         } else {
-            let tmp = (max_size as f64).sqrt() as usize;
-            if max_size % tmp == 0 {
-                // max_size is a perfect square
-                self_size = tmp;
-            } else {
-                self_size = tmp + 1;
-            }
+            let tmp = (max_size as f64).sqrt().ceil() as usize;
+            self_size = tmp;
             pass_size = tmp;
         }
         let mut children_seed = Vec::with_capacity(self_size);
@@ -314,6 +309,21 @@ mod tests{
         assert_eq!(test_tree, reference_tree);
     }
 
+    #[test]
+    fn test_insert_and_delete_correctness_odd(){
+        for i in 17..32 {
+            println!("{}", i);
+            let mut test_tree = VEBTree::new(i);
+            let mut reference_tree = VEBTree::new(i);
+            for j in 0..i {
+                test_tree.insert(j);
+            }
+            for j in 0..i {
+                test_tree.delete(j);
+            }
+            assert_eq!(test_tree, reference_tree);
+        }
+    }
     #[test]
     fn test_minimum_correctness(){
         let mut test_tree = VEBTree::new(16);
