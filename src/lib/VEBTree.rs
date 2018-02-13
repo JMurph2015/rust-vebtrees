@@ -84,41 +84,63 @@ impl<'a, Q: ?Sized, T: Integer> Index<&'a Q> for VEBTree<T> {
 }
 */
 impl VEBTree {
-    pub fn search(&self, value: T) -> Option<T> {
+    fn high(&self, value: T) -> T {
+        return value / self.children.len();
+    }
+    fn low(&self, value: T) -> T {
+        return value % self.children.len();
+    }
+
+    pub fn contains(&self, value: T) -> bool {
         match self.min {
             Some(min_val) => {
-                if min_val == value {
-                    return self.min;
+                if value == min_val {
+                    return true;
                 } else {
                     match self.max {
                         Some(max_val) => {
-                            if max_val == value {
-                                return self.max;
+                            if value == max_val {
+                                return true;
                             } else {
-                                if self.children.len() == 0 {
-                                    return None;
+                                if self.children.len() > 0 {
+                                    return self
+                                        .children[self.high(value)]
+                                        .contains(self.low(value));
                                 } else {
-                                    let local_idx = value / self.children.len();
-                                    let pass_value = value % self.children.len();
-                                    return self.children[local_idx].search(value);
+                                    return false;
                                 }
                             }
                         },
-                        None => {
-                            return None;
-                        }
-                    };
+                        None => {return false;}
+                    }
                 }
             },
-            None => {
-                return None;
-            }
-        };
+            None => {return false;}
+        }
+    }
+    pub fn search(&self, value: T) -> Option<T> {
+        let min_val = self.min?;
+        if value == min_val {
+            return self.min;
+        }
+        let max_val = self.max?;
+        if value == max_val {
+            return self.max;
+        }
+        if self.children.len() == 0 {
+            return None;
+        } else {
+            let local_idx = self.high(value);
+            let pass_value = self.low(value);
+            self.children[local_idx].minimum()?;
+            let result = self.children[local_idx].search(pass_value)?;
+            return Some(result+local_idx*self.children.len());
+        }
     }
     fn insert_into_tree(&mut self, value: T) {
         if self.children.len() > 0 {
-            let local_idx = value / self.children.len();
-            let pass_value = value % self.children.len();
+            let local_idx = self.high(value);
+            let pass_value = self.low(value);
             match self.children[local_idx].minimum() {
                 Some(min_value) => (),
                 None => {
@@ -173,8 +195,8 @@ impl VEBTree {
 
     fn delete_from_tree(&mut self, value: T) {
         if self.children.len() > 0 {
-            let local_idx = value / self.children.len();
-            let pass_value = value % self.children.len();
+            let local_idx = self.high(value);
+            let pass_value = self.low(value);
             self.children[local_idx].delete(pass_value);
             if self.children[local_idx].minimum() == None {
                 self.aux[0].delete(local_idx);
@@ -280,92 +302,100 @@ impl VEBTree {
     pub fn maximum(&self) -> Option<T> {
         return self.max;
     }
-    pub fn findnext(&self){
-        
-    }
-    pub fn findprev(&self){
-        
-    }
-}
-
-#[cfg(test)]
-mod tests{
-    use lib::VEBTree::*;
-    #[test]
-    fn test_index_correctness(){
-        
-    }
-
-    #[test]
-    fn test_insert_and_delete_correctness(){
-        let mut test_tree = VEBTree::new(16);
-        let mut reference_tree = VEBTree::new(16);
-        for i in 0..16 {
-            test_tree.insert(i);
-        }
-        for i in 0..16 {
-            test_tree.delete(i);
-        }
-        assert_eq!(test_tree, reference_tree);
-    }
-
-    #[test]
-    fn test_insert_and_delete_correctness_odd(){
-        for i in 17..32 {
-            println!("{}", i);
-            let mut test_tree = VEBTree::new(i);
-            let mut reference_tree = VEBTree::new(i);
-            for j in 0..i {
-                test_tree.insert(j);
-            }
-            for j in 0..i {
-                test_tree.delete(j);
-            }
-            assert_eq!(test_tree, reference_tree);
-        }
-    }
-    #[test]
-    fn test_minimum_correctness(){
-        let mut test_tree = VEBTree::new(16);
-        for i in (0..16).rev() {
-            test_tree.insert(i);
-            assert_eq!(test_tree.minimum(), Some(i));
-        }
-        for i in (0..15) {
-            test_tree.delete(i);
-            assert_eq!(test_tree.minimum(), Some(i+1));
-        }
-        for i in (0..16) {
-            test_tree.insert(i);
-        }
-        for i in (0..16) {
-            if i % 2 == 0 {
-                test_tree.delete(i);
+    pub fn findnext(&self, value: T) -> Option<T> {
+        if self.children.len() == 0 {
+            let min_val = self.min?;
+            let max_val = self.max?;
+            if value == 0 && max_val == 1 {
+                return self.max;
             } else {
-                assert_eq!(test_tree.minimum(), Some(i));
-                test_tree.delete(i);
+                return None;
             }
+        } else {
+            match self.min {
+                Some(min_value) => {
+                    if value < min_value {
+                        return self.min
+                    }
+                },
+                None => ()
+            };
+            let cur_cluster_max = self.children[self.high(value)].maximum();
+            match cur_cluster_max {
+                Some(max_value) => {
+                    if self.low(value) < max_value {
+                        let offset = self.children[self.high(value)]
+                            .findnext(self.low(value))?;
+                        return match self.children[self.high(value)].search(offset) {
+                            Some(n) => {
+                                return Some(n + self.high(value)*self.children.len());
+                            },
+                            None => {
+                                return None;
+                            }
+                        };
+                    }
+                },
+                None => ()
+            };
+            let next_cluster = self.aux[0].findnext(self.high(value))?;
+            let offset = self.children[next_cluster].minimum()?;
+            return match self.children[next_cluster].search(offset) {
+                Some(n) => {
+                    return Some(n + next_cluster*self.children.len());
+                },
+                None => {
+                    return None;
+                }
+            };
         }
     }
-
-    #[test]
-    fn test_maximum_correctness(){
-        let mut test_tree = VEBTree::new(16);
-        for i in (0..16) {
-            test_tree.insert(i);
-            assert_eq!(test_tree.maximum(), Some(i));
+    pub fn findprev(&self, value: T) -> Option<T> {
+        if self.children.len() == 0 {
+            let max_value = self.maximum()?;
+            let min_value = self.minimum()?;
+            if max_value == value && max_value != min_value {
+                return self.min;
+            } else {
+                return None;
+            }
+        } else {
+            match self.maximum() {
+                Some(max_value) => {
+                    if value > max_value {
+                        return self.max;
+                    }
+                },
+                None => ()
+            };
+            let cur_cluster_min = self.children[self.high(value)].minimum();
+            match cur_cluster_min {
+                Some(min_value) => {
+                    if self.low(value) > min_value {
+                        let offset = self.children[self.high(value)]
+                            .findprev(self.low(value))?;
+                        return match self.children[self.high(value)].search(offset) {
+                            Some(n) => {
+                                return Some(n + self.high(value)*self.children.len());
+                            },
+                            None => {
+                                return None;
+                            }
+                        };
+                    }
+                },
+                None => ()
+            };
+            let next_cluster = self.aux[0].findprev(self.high(value))?;
+            let offset = self.children[next_cluster].maximum()?;
+            return match self.children[next_cluster].search(offset) {
+                Some(n) => {
+                    return Some(n + next_cluster*self.children.len());
+                },
+                None => {
+                    return None;
+                }
+            };
         }
-        for i in (0..16).rev() {
-            assert_eq!(test_tree.maximum(), Some(i));
-            test_tree.delete(i);
-        }
-    }
-
-    #[test]
-    fn test_findnext_correctness(){
-    }
-
-    #[test]
-    fn test_findprev_correctness(){
     }
 }
