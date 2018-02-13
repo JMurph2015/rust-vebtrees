@@ -1,6 +1,3 @@
-use num::Integer;
-use std::ops::Index;
-
 // Realized that this was the only useful data type to use as keys
 // for the tree.  usize is the default pointer size for the system.
 type T = usize;
