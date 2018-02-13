@@ -4,10 +4,10 @@ use std::time::{Instant, Duration};
 
 #[test]
 fn test_insert_asymptote(){
-    let num_runs = 200;
+    let num_runs = 500;
     let mut test_n_values: Vec<usize> = Vec::with_capacity(num_runs);
     for i in (0..num_runs) {
-        test_n_values.push((i+1)*10_usize.pow(5));
+        test_n_values.push((i+1)*10_usize.pow(3));
     }
     let mut test_results: Vec<f64> = Vec::with_capacity(num_runs);
     for i in 0..test_n_values.len() {
@@ -34,10 +34,10 @@ fn test_insert_asymptote(){
 
 #[test]
 fn test_delete_asymptote(){
-    let num_runs = 200;
+    let num_runs = 500;
     let mut test_n_values: Vec<usize> = Vec::with_capacity(num_runs);
     for i in (0..num_runs) {
-        test_n_values.push((i+1)*10_usize.pow(5));
+        test_n_values.push((i+1)*10_usize.pow(3));
     }
     let mut test_results: Vec<f64> = Vec::with_capacity(num_runs);
     for i in 0..test_n_values.len() {
@@ -69,10 +69,10 @@ fn test_delete_asymptote(){
 
 #[test]
 fn test_findnext_asymptote(){
-    let num_runs = 200;
+    let num_runs = 500;
     let mut test_n_values: Vec<usize> = Vec::with_capacity(num_runs);
     for i in (0..num_runs) {
-        test_n_values.push((i+1)*10_usize.pow(5));
+        test_n_values.push((i+1)*10_usize.pow(3));
     }
     let mut test_results: Vec<f64> = Vec::with_capacity(num_runs);
     for i in 0..test_n_values.len() {
@@ -97,16 +97,16 @@ fn test_findnext_asymptote(){
         &test_n_values[0..test_n_values.len()]
     );
     println!("corr: {:?}", corr);
-    assert!(corr > 0.60);
+    assert!(corr > 0.70);
 }
 
 
 #[test]
 fn test_findprev_asymptote(){
-    let num_runs = 200;
+    let num_runs = 500;
     let mut test_n_values: Vec<usize> = Vec::with_capacity(num_runs);
     for i in (0..num_runs) {
-        test_n_values.push((i+1)*10_usize.pow(5));
+        test_n_values.push((i+1)*10_usize.pow(3));
     }
     let mut test_results: Vec<f64> = Vec::with_capacity(num_runs);
     for i in 0..test_n_values.len() {
@@ -131,7 +131,7 @@ fn test_findprev_asymptote(){
         &test_n_values[0..test_n_values.len()]
     );
     println!("corr: {:?}", corr);
-    assert!(corr > 0.60);
+    assert!(corr > 0.70);
 }
 
 
