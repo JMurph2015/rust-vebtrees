@@ -1,7 +1,6 @@
 [package]
-name = "vEBtree"
+name = "vebtrees"
 version = "0.1.0"
 authors = ["Joseph Murphy"]
 
 [dependencies]
-num = "^0.1.42"
