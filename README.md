@@ -1,4 +1,6 @@
-[![Crates.io]](https://img.shields.io/crates/v/vebtrees.svg)[![Built with Spacemacs](https://cdn.rawgit.com/syl20bnr/spacemacs/442d025779da2f62fc86c2082703697714db6514/assets/spacemacs-badge.svg)](http://spacemacs.org)
+
+[![crates.io](http://meritbadge.herokuapp.com/vebtrees)](https://crates.io/crates/vebtrees)
+[![Built with Spacemacs](https://cdn.rawgit.com/syl20bnr/spacemacs/442d025779da2f62fc86c2082703697714db6514/assets/spacemacs-badge.svg)](http://spacemacs.org)
 # vebtrees
 __A Rust Implementation of Van Emde Boas Trees__
 
