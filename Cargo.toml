@@ -2,5 +2,7 @@
 name = "vebtrees"
 version = "0.1.0"
 authors = ["Joseph Murphy"]
+description = "A Rust implementation of Van Emde Boas trees"
+license = "MIT"
 
 [dependencies]
