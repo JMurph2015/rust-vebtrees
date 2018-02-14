@@ -5,7 +5,7 @@
 __A Rust Implementation of Van Emde Boas Trees__
 
 ## Introduction
-Van Emde Boas trees are a cool data strucuture because they can implement all associative array functions
+Van Emde Boas trees are cool data strucutures because they can implement all associative array functions
 in O(loglog(M)) where M is the maximum capacity of the tree.
 
 
