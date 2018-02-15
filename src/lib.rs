@@ -1,5 +1,5 @@
-mod vebtree;
-use vebtree::VEBTree;
+pub mod vebtree;
+pub use vebtree::VEBTree;
 
 #[cfg(test)]
 mod tests;
