@@ -28,11 +28,11 @@ impl VEBTree {
     /// Creates a new VEBTree with given max capacity.
     ///
     /// # Arguments
-    /// * max_size: usize - the maximum capacity with which to
+    /// * max_size: the maximum capacity with which to
     ///     initialize the tree
     ///
     /// # Returns
-    /// * VEBTree - a tree initialized to the maximum capacity
+    /// * A tree initialized to the maximum capacity
     ///     specified
     pub fn new(max_size: usize) -> Self {
         // Takes the square root of the max_size, then casts
@@ -70,12 +70,12 @@ impl VEBTree {
     /// Returns the quotient of the given number with respect to the
     ///     instance's number of children.
     /// # Arguments
-    /// * self: &Self - the instance of the VEBTree
-    /// * value: T==usize - the value to divide by the number of
+    /// * self: the instance of the VEBTree
+    /// * value: the value to divide by the number of
     ///     children
     ///
     /// # Returns
-    /// * T - The quotient of the number w.r.t. self.children.len()
+    /// * The quotient of the number w.r.t. self.children.len()
     fn high(&self, value: T) -> T {
         return value / self.children.len();
     }
@@ -88,7 +88,7 @@ impl VEBTree {
     ///     children
     ///
     /// # Returns
-    /// * T - The modulus of the number w.r.t. self.children.len()
+    /// * The modulus of the number w.r.t. self.children.len()
     fn low(&self, value: T) -> T {
         return value % self.children.len();
     }
@@ -96,8 +96,11 @@ impl VEBTree {
     /// Returns whether or not the given element is in the tree
     ///
     /// # Arguments
-    /// * self: &Self - the instance of the VEBTree
-    /// * value: T==usize - the value for which to check membership
+    /// * self: the instance of the VEBTree
+    /// * value: the value for which to check membership
+    ///
+    /// # Returns
+    /// * Whether or not the value is contained in the tree
     pub fn contains(&self, value: T) -> bool {
         match self.min {
             Some(min_val) => {
@@ -130,11 +133,11 @@ impl VEBTree {
     ///     it is in the tree, None if not.
     ///
     /// # Arguments
-    /// * self: &Self - the instance of the VEBTree to operate on
-    /// * value: T==usize - the value to search for in the tree
+    /// * self: the instance of the VEBTree to operate on
+    /// * value: the value to search for in the tree
     ///
     /// # Returns
-    /// * Option<T> - the value being searched for or None if the value
+    /// * The value being searched for or None if the value
     ///     is not in the tree.
     pub fn search(&self, value: T) -> Option<T> {
         let min_val = self.min?;
@@ -160,11 +163,8 @@ impl VEBTree {
     ///     into the child trees.
     ///
     /// # Arguments
-    /// * self: &Self - the instance of the VEBTree to operate on
-    /// * value: T==usize - the value to insert into the tree
-    ///
-    /// # Returns
-    /// * () - returns nothing
+    /// * self: the instance of the VEBTree to operate on
+    /// * value: the value to insert into the tree
     fn insert_into_tree(&mut self, value: T) {
         if self.children.len() > 0 {
             let local_idx = self.high(value);
@@ -183,11 +183,8 @@ impl VEBTree {
     ///     is already present.
     ///
     /// # Arguments
-    /// * self: &Self - the instance of the VEBTree to operate on
-    /// * value: T==usize - the value to insert into the tree
-    ///
-    /// # Returns
-    /// * () - returns nothing
+    /// * self: the instance of the VEBTree to operate on
+    /// * value: the value to insert into the tree
     pub fn insert(&mut self, value: T) {
         match self.min {
             Some(min_value) => {
@@ -235,11 +232,8 @@ impl VEBTree {
     ///     into the VEBTree
     ///
     /// # Arguments
-    /// * self: &Self - the instance of the VEBTree to operate on
-    /// * value: T==usize - the value to delete from the child trees
-    ///
-    /// # Returns
-    /// * () - returns nothing
+    /// * self: the instance of the VEBTree to operate on
+    /// * value: the value to delete from the child trees
     fn delete_from_tree(&mut self, value: T) {
         if self.children.len() > 0 {
             let local_idx = self.high(value);
@@ -254,11 +248,8 @@ impl VEBTree {
     /// Deletes an element from the VEBTree
     ///
     /// # Arguments
-    /// * self: &Self - the instance of the VEBTree to operate on
-    /// * value: T==usize - the value to delete from the tree
-    ///
-    /// # Returns
-    /// * () - returns nothing
+    /// * self: the instance of the VEBTree to operate on
+    /// * value: the value to delete from the tree
     pub fn delete(&mut self, value: T){
         match self.min {
             Some(min_value) => {
@@ -355,10 +346,10 @@ impl VEBTree {
     /// Gets the minimum of the currently stored elements
     ///
     /// # Arguments
-    /// * self: &Self - the instance of VEBTree to operate on.
+    /// * self: the instance of VEBTree to operate on
     ///
     /// # Returns
-    /// * () - returns nothing
+    /// * The minimum element currently stored in the tree
     pub fn minimum(&self) -> Option<T> {
         return self.min;
     }
@@ -369,7 +360,7 @@ impl VEBTree {
     /// * self: &Self - the instance of VEBTree to operate on.
     ///
     /// # Returns
-    /// * () - returns nothing
+    /// * The maximum element currently stored in the tree
     pub fn maximum(&self) -> Option<T> {
         return self.max;
     }
@@ -377,11 +368,11 @@ impl VEBTree {
     /// Finds the next consecutive element currently in the tree
     ///
     /// # Arguments
-    /// * self: &Self - the instance of VEBTree to operate on.
-    /// * value: T==usize - the value to find the successor of.
+    /// * self: the instance of VEBTree to operate on.
+    /// * value: the value to find the successor of.
     ///
     /// # Returns
-    /// * Option<T> the successor of 'value' or None if not found
+    /// * The successor of 'value' or None if not found
     pub fn findnext(&self, value: T) -> Option<T> {
         if self.children.len() == 0 {
             let min_val = self.min?;
@@ -434,11 +425,11 @@ impl VEBTree {
     /// Finds the immediate previous element currently in the array
     ///
     /// # Arguments
-    /// * self: &Self - the instance of VEBTree to operate on
-    /// * value: T==usize - the value to find the predecessor of
+    /// * self: the instance of VEBTree to operate on
+    /// * value: the value to find the predecessor of
     ///
     /// # Returns
-    /// * Option<T> the predecessor of 'value' or None if not found
+    /// * The predecessor of 'value' or None if not found
     pub fn findprev(&self, value: T) -> Option<T> {
         if self.children.len() == 0 {
             let max_value = self.maximum()?;
