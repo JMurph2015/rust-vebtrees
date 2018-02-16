@@ -1,5 +1,7 @@
 
 [![crates.io](http://meritbadge.herokuapp.com/vebtrees)](https://crates.io/crates/vebtrees)
+[![docs.rs](https://docs.rs/vebtrees/badge.svg)](https://docs.rs/vebtrees)
+[![Build Status](https://travis-ci.org/JMurph2015/rust-vebtrees.svg?branch=master)](https://travis-ci.org/JMurph2015/rust-vebtrees)
 [![Built with Spacemacs](https://cdn.rawgit.com/syl20bnr/spacemacs/442d025779da2f62fc86c2082703697714db6514/assets/spacemacs-badge.svg)](http://spacemacs.org)
 # vebtrees
 __A Rust Implementation of Van Emde Boas Trees__
