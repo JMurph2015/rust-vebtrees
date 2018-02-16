@@ -1,4 +1,4 @@
-use vebtree::VEBTree;
+use VEBTree;
 
 use std::time::{Instant, Duration};
 
