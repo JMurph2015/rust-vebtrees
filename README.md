@@ -1,4 +1,3 @@
-
 [![crates.io](http://meritbadge.herokuapp.com/vebtrees)](https://crates.io/crates/vebtrees)
 [![docs.rs](https://docs.rs/vebtrees/badge.svg)](https://docs.rs/vebtrees)
 [![Build Status](https://travis-ci.org/JMurph2015/rust-vebtrees.svg?branch=master)](https://travis-ci.org/JMurph2015/rust-vebtrees)

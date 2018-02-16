@@ -4,5 +4,8 @@ version = "0.1.2"
 authors = ["Joseph Murphy"]
 description = "A Rust implementation of Van Emde Boas trees"
 license = "MIT"
+readme = "README.md"
+repository = "https://github.com/JMurph2015/rust-vebtrees"
+travis-ci = { repository = "JMurph2015/rust-vebtrees", branch = "master" }
 
 [dependencies]
