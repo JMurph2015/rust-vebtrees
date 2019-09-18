@@ -21,7 +21,7 @@ type T = usize;
 /// * min: Option<T> - The minimum of the currently stored elements,
 ///     none if there are no stored elements, equal to max if there is
 ///     only one element
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Clone,Debug, PartialEq, Eq)]
 pub struct VEBTree {
     children: Vec<VEBTree>,
     aux: Vec<VEBTree>,
