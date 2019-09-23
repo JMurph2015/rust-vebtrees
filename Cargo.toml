@@ -1,6 +1,6 @@
 [package]
 name = "vebtrees"
-version = "0.1.3"
+version = "0.1.4"
 authors = ["Joseph Murphy"]
 description = "A Rust implementation of Van Emde Boas trees"
 license = "MIT"
