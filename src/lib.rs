@@ -6,7 +6,7 @@ mod test_asymptotes;
 
 // Realized that this was the only useful data type to use as keys
 // for the tree.  usize is the default pointer size for the system.
-type T = usize;
+
 
 /// An implementation of Van Emde Boas Trees in Rust
 ///
@@ -22,15 +22,55 @@ type T = usize;
 ///     none if there are no stored elements, equal to max if there is
 ///     only one element
 #[derive(Clone,Debug, PartialEq, Eq)]
-pub struct VEBTree {
-    children: Vec<VEBTree>,
-    aux: Vec<VEBTree>,
+pub struct VEBTree<T> {
+    children: Vec<VEBTree<T>>,
+    aux: Vec<VEBTree<T>>,
     max: Option<T>,
     min: Option<T>
 
 }
 
-impl VEBTree {
+impl<T: Int> VEBTree<T> {
+    /// Creates a new VEBTree with can contain every Element of Type T (0..MAX_VALUE).
+    ///
+    /// # Arguments
+    /// * max_size: the maximum capacity with which to
+    ///     initialize the tree
+    ///
+    /// # Returns
+    /// * A tree initialized to the maximum capacity
+    ///     specified
+    pub fn new() -> Self {
+        let max_size = T::MAX_VALUE;
+        // Takes the square root of the max_size, then casts
+        // it back to an usize integer 
+        let self_size: usize;
+        let pass_size: usize;
+        if max_size <= T::TWO {
+            self_size = 0;
+            pass_size = 0;
+        } else {
+            let tmp = max_size.into_f64().sqrt().ceil() as usize;
+            self_size = tmp;
+            pass_size = tmp;
+        }
+        let mut children_seed: Vec<VEBTree<T>> = Vec::with_capacity(self_size);
+        let mut aux_seed: Vec<VEBTree<T>> = Vec::with_capacity(1);
+        if pass_size > 0 {
+            for _ in 0..self_size {
+                children_seed.push(Self::with_capacity(pass_size));
+            }
+            let aux = Self::with_capacity(pass_size);
+            aux_seed.push(aux);
+        }
+        Self {
+            children: children_seed,
+            aux: aux_seed,
+            max: None,
+            min: None
+        }
+    }
+
     /// Creates a new VEBTree with given max capacity.
     ///
     /// # Arguments
@@ -40,7 +80,7 @@ impl VEBTree {
     /// # Returns
     /// * A tree initialized to the maximum capacity
     ///     specified
-    pub fn new(max_size: usize) -> Self {
+    pub fn with_capacity(max_size: usize) -> Self {
         // Takes the square root of the max_size, then casts
         // it back to an usize integer 
         let self_size: usize;
@@ -53,26 +93,25 @@ impl VEBTree {
             self_size = tmp;
             pass_size = tmp;
         }
-        let mut children_seed: Vec<VEBTree> = Vec::with_capacity(self_size);
-        let mut aux_seed: Vec<VEBTree> = Vec::with_capacity(1);
+        let mut children_seed: Vec<VEBTree<T>> = Vec::with_capacity(self_size);
+        let mut aux_seed: Vec<VEBTree<T>> = Vec::with_capacity(1);
         if pass_size > 0 {
-            for index in 0..self_size {
-                children_seed.push(Self::new(pass_size));
+            for _ in 0..self_size {
+                children_seed.push(Self::with_capacity(pass_size));
             }
-            let mut aux = Self::new(pass_size);
+            let aux = Self::with_capacity(pass_size);
             aux_seed.push(aux);
         }
-        let mut tree = VEBTree {
+        Self {
             children: children_seed,
             aux: aux_seed,
             max: None,
             min: None
-        };
-        return tree
+        }
     }
 }
 
-impl VEBTree {
+impl<T: Int> VEBTree<T> {
     /// Returns the quotient of the given number with respect to the
     ///     instance's number of children.
     /// # Arguments
@@ -83,7 +122,7 @@ impl VEBTree {
     /// # Returns
     /// * The quotient of the number w.r.t. self.children.len()
     fn high(&self, value: T) -> T {
-        return value / self.children.len();
+        return value / T::from_usize(self.children.len());
     }
 
     /// Returns the modulus of the given number with respect to the
@@ -96,7 +135,7 @@ impl VEBTree {
     /// # Returns
     /// * The modulus of the number w.r.t. self.children.len()
     fn low(&self, value: T) -> T {
-        return value % self.children.len();
+        return value % T::from_usize(self.children.len());
     }
 
     /// Returns whether or not the given element is in the tree
@@ -119,8 +158,9 @@ impl VEBTree {
                                 return true;
                             } else {
                                 if self.children.len() > 0 {
+                                    let tmp = self.high(value).into_usize();
                                     return self
-                                        .children[self.high(value)]
+                                        .children[tmp]
                                         .contains(self.low(value));
                                 } else {
                                     return false;
@@ -157,11 +197,11 @@ impl VEBTree {
         if self.children.len() == 0 {
             return None;
         } else {
-            let local_idx = self.high(value);
+            let local_idx = self.high(value).into_usize();
             let pass_value = self.low(value);
             self.children[local_idx].minimum()?;
             let result = self.children[local_idx].search(pass_value)?;
-            return Some(result+local_idx*self.children.len());
+            return Some(result+self.high(value)*T::from_usize(self.children.len()));
         }
     }
 
@@ -174,14 +214,15 @@ impl VEBTree {
     fn insert_into_tree(&mut self, value: T) {
         if self.children.len() > 0 {
             let local_idx = self.high(value);
+            let index = local_idx.into_usize();
             let pass_value = self.low(value);
-            match self.children[local_idx].minimum() {
-                Some(min_value) => (),
+            match self.children[index].minimum() {
+                Some(_) => (),
                 None => {
                     self.aux[0].insert(local_idx);
                 }
             };
-            self.children[local_idx].insert(pass_value);
+            self.children[index].insert(pass_value);
         }
     }
 
@@ -243,9 +284,10 @@ impl VEBTree {
     fn delete_from_tree(&mut self, value: T) {
         if self.children.len() > 0 {
             let local_idx = self.high(value);
+            let index = local_idx.into_usize();
             let pass_value = self.low(value);
-            self.children[local_idx].delete(pass_value);
-            if self.children[local_idx].minimum() == None {
+            self.children[index].delete(pass_value);
+            if self.children[index].minimum() == None {
                 self.aux[0].delete(local_idx);
             }
         }
@@ -277,14 +319,15 @@ impl VEBTree {
                             let first_populated = self.aux[0].minimum();
                             match first_populated {
                                 Some(first_cluster) => {
+                                    let index = first_cluster.into_usize();
                                     let new_min = self
-                                        .children[first_cluster as usize]
+                                        .children[index]
                                         .minimum();
                                     match new_min {
                                         Some(min) => {
-                                            self.min = Some((first_cluster
-                                                            * self.children.len() as T
-                                                             + min));
+                                            self.min = Some(first_cluster
+                                                            * T::from_usize(self.children.len())
+                                                             + min);
                                             return;
                                         },
                                         // Not sure how one gets here, probably
@@ -304,14 +347,15 @@ impl VEBTree {
                             let last_populated = self.aux[0].maximum();
                             match last_populated {
                                 Some(last_cluster) => {
+                                    let index = last_cluster.into_usize();
                                     let new_max = self
-                                        .children[last_cluster as usize]
+                                        .children[index]
                                         .maximum();
                                     match new_max {
                                         Some(max) => {
-                                            self.max = Some((last_cluster
-                                                             * self.children.len() as T
-                                                             + max));
+                                            self.max = Some(last_cluster
+                                                             * T::from_usize(self.children.len())
+                                                             + max);
                                             return;
                                         },
                                         None => {
@@ -381,9 +425,8 @@ impl VEBTree {
     /// * The successor of 'value' or None if not found
     pub fn findnext(&self, value: T) -> Option<T> {
         if self.children.len() == 0 {
-            let min_val = self.min?;
             let max_val = self.max?;
-            if value == 0 && max_val == 1 {
+            if value == T::ZERO && max_val == T::ONE {
                 return self.max;
             } else {
                 return None;
@@ -397,18 +440,19 @@ impl VEBTree {
                 },
                 None => ()
             };
-            let cur_cluster_max = self.children[self.high(value)].maximum();
+            let index = self.high(value).into_usize();
+            let cur_cluster_max = self.children[index].maximum();
             match cur_cluster_max {
                 Some(max_value) => {
                     if self.low(value) < max_value {
-                        let offset = self.children[self.high(value)]
+                        let offset = self.children[index]
                             .findnext(self.low(value))?;
-                        return match self.children[self.high(value)].search(offset) {
+                        return match self.children[index].search(offset) {
                             Some(n) => {
-                                return Some(n + self.high(value)*self.children.len());
+                                Some(n + self.high(value)*T::from_usize(self.children.len()))
                             },
                             None => {
-                                return None;
+                                None
                             }
                         };
                     }
@@ -416,13 +460,14 @@ impl VEBTree {
                 None => ()
             };
             let next_cluster = self.aux[0].findnext(self.high(value))?;
-            let offset = self.children[next_cluster].minimum()?;
-            return match self.children[next_cluster].search(offset) {
+            let index = next_cluster.into_usize();
+            let offset = self.children[index].minimum()?;
+            return match self.children[index].search(offset) {
                 Some(n) => {
-                    return Some(n + next_cluster*self.children.len());
+                    Some(n + next_cluster*T::from_usize(self.children.len()))
                 },
                 None => {
-                    return None;
+                    None
                 }
             };
         }
@@ -454,18 +499,19 @@ impl VEBTree {
                 },
                 None => ()
             };
-            let cur_cluster_min = self.children[self.high(value)].minimum();
+            let index = self.high(value).into_usize();
+            let cur_cluster_min = self.children[index].minimum();
             match cur_cluster_min {
                 Some(min_value) => {
                     if self.low(value) > min_value {
-                        let offset = self.children[self.high(value)]
+                        let offset = self.children[index]
                             .findprev(self.low(value))?;
-                        return match self.children[self.high(value)].search(offset) {
+                        return match self.children[index].search(offset) {
                             Some(n) => {
-                                return Some(n + self.high(value)*self.children.len());
+                                Some(n + self.high(value)*T::from_usize(self.children.len()))
                             },
                             None => {
-                                return None;
+                                None
                             }
                         };
                     }
@@ -473,15 +519,78 @@ impl VEBTree {
                 None => ()
             };
             let next_cluster = self.aux[0].findprev(self.high(value))?;
-            let offset = self.children[next_cluster].maximum()?;
-            return match self.children[next_cluster].search(offset) {
+            let index = next_cluster.into_usize();
+            let offset = self.children[index].maximum()?;
+            return match self.children[index].search(offset) {
                 Some(n) => {
-                    return Some(n + next_cluster*self.children.len());
+                    Some(n + next_cluster*T::from_usize(self.children.len()))
                 },
                 None => {
-                    return None;
+                    None
                 }
             };
         }
     }
 }
+
+pub trait Int: Copy + PartialEq + Eq + Ord + std::ops::Add<Self, Output=Self> + std::ops::Mul<Self, Output=Self> + 
+    std::ops::Div<Self, Output=Self> + std::ops::Rem<Self, Output=Self>  {
+    const MAX_VALUE: Self;
+    const MIN_VALUE: Self;
+    const ZERO: Self;
+    const ONE: Self;
+    const TWO: Self;
+
+    fn into_usize(&self) -> usize;
+    fn into_f64(&self) -> f64;
+    fn from_usize(usize) -> Self;
+}
+
+impl Int for usize {
+    const MAX_VALUE: Self = Self::max_value();
+    const MIN_VALUE: Self = Self::min_value();
+
+    const ZERO: Self = 0_usize;
+    const ONE: Self = 1_usize;
+    const TWO: Self = 2_usize;
+    
+
+    fn into_f64(&self) -> f64 {
+        *self as f64
+    }
+
+    fn into_usize(&self) -> usize {
+        *self
+    }
+
+    fn from_usize(val: usize) -> Self {
+        val
+    }
+}
+
+impl Int for u64 {
+    const MAX_VALUE: Self = Self::max_value();
+    const MIN_VALUE: Self = Self::min_value();
+
+    const ZERO: Self = 0_u64;
+    const ONE: Self = 1_u64;
+    const TWO: Self = 2_u64;
+    
+
+    fn into_f64(&self) -> f64 {
+        *self as f64
+    }
+
+    fn into_usize(&self) -> usize {
+        *self as usize
+    }
+
+    // runs on 64bit systems
+    fn from_usize(val: usize) -> Self {
+        val as u64
+    }
+}
+
+
+
+
