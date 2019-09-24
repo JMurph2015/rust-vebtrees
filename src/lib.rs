@@ -591,6 +591,73 @@ impl Int for u64 {
     }
 }
 
+impl Int for u32 {
+    const MAX_VALUE: Self = Self::max_value();
+    const MIN_VALUE: Self = Self::min_value();
 
+    const ZERO: Self = 0_u32;
+    const ONE: Self = 1_u32;
+    const TWO: Self = 2_u32;
+    
+
+    fn into_f64(&self) -> f64 {
+        *self as f64
+    }
+
+    fn into_usize(&self) -> usize {
+        *self as usize
+    }
+
+    // Works if the usize is < 32 bit
+    fn from_usize(val: usize) -> Self {
+        val as u32
+    }
+}
+
+impl Int for u16 {
+    const MAX_VALUE: Self = Self::max_value();
+    const MIN_VALUE: Self = Self::min_value();
+
+    const ZERO: Self = 0_u16;
+    const ONE: Self = 1_u16;
+    const TWO: Self = 2_u16;
+    
+
+    fn into_f64(&self) -> f64 {
+        *self as f64
+    }
+
+    fn into_usize(&self) -> usize {
+        *self as usize
+    }
+
+    // Works if the usize is < 16 bit
+    fn from_usize(val: usize) -> Self {
+        val as u16
+    }
+}
+
+impl Int for u8 {
+    const MAX_VALUE: Self = Self::max_value();
+    const MIN_VALUE: Self = Self::min_value();
+
+    const ZERO: Self = 0_u8;
+    const ONE: Self = 1_u8;
+    const TWO: Self = 2_u8;
+    
+
+    fn into_f64(&self) -> f64 {
+        *self as f64
+    }
+
+    fn into_usize(&self) -> usize {
+        *self as usize
+    }
+
+    // Works if the usize is < 8 bit
+    fn from_usize(val: usize) -> Self {
+        val as u8
+    }
+}
 
 
