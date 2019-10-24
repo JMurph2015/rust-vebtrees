@@ -6,12 +6,12 @@ use std::time::{Instant, Duration};
 fn test_insert_asymptote(){
     let num_runs = 500;
     let mut test_n_values: Vec<usize> = Vec::with_capacity(num_runs);
-    for i in (0..num_runs) {
+    for i in 0..num_runs {
         test_n_values.push((i+1)*10_usize.pow(3));
     }
     let mut test_results: Vec<f64> = Vec::with_capacity(num_runs);
     for i in 0..test_n_values.len() {
-        let mut test_tree = VEBTree::new(i);
+        let mut test_tree = VEBTree::<usize>::with_capacity(i);
         let start = Instant::now();
         for j in 0..i {
             if j % 2 == 0 {
@@ -36,12 +36,12 @@ fn test_insert_asymptote(){
 fn test_delete_asymptote(){
     let num_runs = 500;
     let mut test_n_values: Vec<usize> = Vec::with_capacity(num_runs);
-    for i in (0..num_runs) {
+    for i in 0..num_runs {
         test_n_values.push((i+1)*10_usize.pow(3));
     }
     let mut test_results: Vec<f64> = Vec::with_capacity(num_runs);
     for i in 0..test_n_values.len() {
-        let mut test_tree = VEBTree::new(i);
+        let mut test_tree = VEBTree::<usize>::with_capacity(i);
         for j in 0..i {
             if j % 2 == 0 {
                 test_tree.insert(j);
@@ -71,12 +71,12 @@ fn test_delete_asymptote(){
 fn test_findnext_asymptote(){
     let num_runs = 500;
     let mut test_n_values: Vec<usize> = Vec::with_capacity(num_runs);
-    for i in (0..num_runs) {
+    for i in 0..num_runs {
         test_n_values.push((i+1)*10_usize.pow(3));
     }
     let mut test_results: Vec<f64> = Vec::with_capacity(num_runs);
     for i in 0..test_n_values.len() {
-        let mut test_tree = VEBTree::new(i);
+        let mut test_tree = VEBTree::<usize>::with_capacity(i);
         for j in 0..i {
             if i % 2 == 0 {
                 test_tree.insert(j);
@@ -105,12 +105,12 @@ fn test_findnext_asymptote(){
 fn test_findprev_asymptote(){
     let num_runs = 500;
     let mut test_n_values: Vec<usize> = Vec::with_capacity(num_runs);
-    for i in (0..num_runs) {
+    for i in 0..num_runs {
         test_n_values.push((i+1)*10_usize.pow(3));
     }
     let mut test_results: Vec<f64> = Vec::with_capacity(num_runs);
     for i in 0..test_n_values.len() {
-        let mut test_tree = VEBTree::new(i);
+        let mut test_tree = VEBTree::<usize>::with_capacity(i);
         for j in 0..i {
             if i % 2 == 0 {
                 test_tree.insert(j);

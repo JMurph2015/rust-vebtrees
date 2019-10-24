@@ -1,13 +1,11 @@
 use VEBTree;
 
-use std::time::{Instant, Duration};
-
 
 
 #[test]
 fn test_contains_correctness(){
     for j in 0..16 {
-        let mut test_tree = VEBTree::new(16);
+        let mut test_tree = VEBTree::<usize>::with_capacity(16);
         for i in 0..j {
             test_tree.insert(i);
         }
@@ -23,7 +21,7 @@ fn test_contains_correctness(){
 #[test]
 fn test_search_correctness(){
     for i in 0..16 {
-        let mut test_tree = VEBTree::new(16);
+        let mut test_tree = VEBTree::<usize>::with_capacity(16);
         for j in 0..i {
             test_tree.insert(j);
         }
@@ -36,8 +34,8 @@ fn test_search_correctness(){
 
 #[test]
 fn test_insert_and_delete_correctness(){
-    let mut test_tree = VEBTree::new(16);
-    let mut reference_tree = VEBTree::new(16);
+    let mut test_tree = VEBTree::<usize>::with_capacity(16);
+    let reference_tree = VEBTree::<usize>::with_capacity(16);
     for i in 0..16 {
         test_tree.insert(i);
     }
@@ -51,8 +49,8 @@ fn test_insert_and_delete_correctness(){
 fn test_insert_and_delete_correctness_odd(){
     for i in 17..32 {
         println!("{}", i);
-        let mut test_tree = VEBTree::new(i);
-        let mut reference_tree = VEBTree::new(i);
+        let mut test_tree = VEBTree::<usize>::with_capacity(i);
+        let reference_tree = VEBTree::<usize>::with_capacity(i);
         for j in 0..i {
             test_tree.insert(j);
         }
@@ -64,7 +62,7 @@ fn test_insert_and_delete_correctness_odd(){
 }
 #[test]
 fn test_minimum_correctness(){
-    let mut test_tree = VEBTree::new(16);
+    let mut test_tree = VEBTree::<usize>::with_capacity(16);
     for i in (0..16).rev() {
         test_tree.insert(i);
         assert_eq!(test_tree.minimum(), Some(i));
@@ -88,7 +86,7 @@ fn test_minimum_correctness(){
 
 #[test]
 fn test_maximum_correctness(){
-    let mut test_tree = VEBTree::new(16);
+    let mut test_tree = VEBTree::<usize>::with_capacity(16);
     for i in 0..16 {
         test_tree.insert(i);
         assert_eq!(test_tree.maximum(), Some(i));
@@ -101,7 +99,7 @@ fn test_maximum_correctness(){
 
 #[test]
 fn test_findnext_correctness(){
-    let mut test_tree = VEBTree::new(16);
+    let mut test_tree = VEBTree::<usize>::with_capacity(16);
     for i in 0..16 {
         if i % 3 == 0 {
             test_tree.insert(i);
@@ -116,7 +114,7 @@ fn test_findnext_correctness(){
 
 #[test]
 fn test_findprev_correctness(){
-    let mut test_tree = VEBTree::new(16);
+    let mut test_tree = VEBTree::<usize>::with_capacity(16);
     for i in 0..16 {
         if i % 3 == 0 {
             test_tree.insert(i);
